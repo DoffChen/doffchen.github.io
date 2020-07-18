@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+
+
+<title>数据结构-队列&amp;栈 | Blog of DoffChen</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">DoffChen&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">归档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                    <a class="menu-item" href="http://tools.doffchen.cn/%E7%95%99%E8%A8%80%E6%9D%BF/">留言</a>
+                
+                    <a class="menu-item" href="http://tools.doffchen.cn/">tools</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">DoffChen&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">归档</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                    <a class="menu-item" href="/about">关于</a>
+                
+                    <a class="menu-item" href="http://tools.doffchen.cn/%E7%95%99%E8%A8%80%E6%9D%BF/">留言</a>
+                
+                    <a class="menu-item" href="http://tools.doffchen.cn/">tools</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">数据结构-队列&amp;栈</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">DoffChen</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 4, 2019&nbsp;&nbsp;18:50:08</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/数据结构/">数据结构</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="队列-先入先出（FIFO）的数据结构"><a href="#队列-先入先出（FIFO）的数据结构" class="headerlink" title="队列-先入先出（FIFO）的数据结构"></a>队列-先入先出（FIFO）的数据结构</h1><h3 id="队列的定义"><a href="#队列的定义" class="headerlink" title="队列的定义"></a>队列的定义</h3><p>队列是指允许在一端进行插入,而在另一端进行删除的<code>线性表</code>.允许进行<code>删除</code>运算的一端成为<code>队头(或排头)</code>,允许进行<code>插入</code>运算的一端称为<code>队尾</code>.<br>队列称为<code>&quot;先进先出&quot;</code>或<code>&quot;后进后出&quot;</code>的线性表.</p>
+<p><img src="https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/08/14/screen-shot-2018-05-03-at-151021.png" alt="cmd-markdown-logo"></p>
+<p>在 FIFO 数据结构中，将<code>首先处理添加到队列中的第一个元素</code>。<br>如上图所示，队列是典型的 FIFO 数据结构。插入（insert）操作也称作入队（enqueue），新元素始终被添加在<code>队列的末尾</code>。 删除（delete）操作也被称为出队（dequeue)。 你只能移除<code>第一个元素</code>。</p>
+<h2 id="示例-队列"><a href="#示例-队列" class="headerlink" title="示例 - 队列"></a>示例 - 队列</h2><hr>
+<p>1. 入队：您可以单击下面的&nbsp;<code>Enqueue</code>&nbsp;以查看如何将新元素 6 添加到队列中。</p>
+
+<p><img alt id="queue-img" src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/05/02/screen-shot-2018-05-02-at-172840.png" style="display: inline; ">&nbsp; &nbsp;&nbsp;<button id="queue-btn1" onclick="document.getElementById('queue-img').src='https://s3-lc-upload.s3.amazonaws.com/uploads/2018/05/02/screen-shot-2018-05-02-at-172840.png';document.getElementById('queue-btn2').style='display:inline';document.getElementById('queue-btn1').style='display:none';" style="display: none;" type="button">Enqueue</button><button id="queue-btn2" onclick="document.getElementById('queue-img').src='https://s3-lc-upload.s3.amazonaws.com/uploads/2018/05/02/screen-shot-2018-05-02-at-174355.png';document.getElementById('queue-btn1').style='display:inline';document.getElementById('queue-btn2').style='display:none';" style="display: inline;" type="button">Reset</button></p>
+
+<p>2. 出队：您可以单击下面的 <code>Dequeue</code> 以查看将删除哪个元素。</p>
+
+<p><img alt id="queue-img2" src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/05/02/screen-shot-2018-05-02-at-172840.png" style="display: inline; ">&nbsp; &nbsp;<button id="queue-btn3" onclick="document.getElementById('queue-img2').src='https://s3-lc-upload.s3.amazonaws.com/uploads/2018/05/03/screen-shot-2018-05-02-at-175409.png';document.getElementById('queue-btn4').style='display:inline';document.getElementById('queue-btn3').style='display:none';" style="display: inline;" type="button">Dequeue</button><button id="queue-btn4" onclick="document.getElementById('queue-img2').src='https://s3-lc-upload.s3.amazonaws.com/uploads/2018/05/02/screen-shot-2018-05-02-at-172840.png';document.getElementById('queue-btn3').style='display:inline';document.getElementById('queue-btn4').style='display:none';" style="display: none;" type="button">Reset</button></p>
+
+
+<div class="block-markdown"><p>为了实现队列，我们可以使用动态数组和指向队列头部的索引。</p>
+
+<p>如上所述，队列应支持两种操作：入队和出队。入队会向队列追加一个新元素，而出队会删除第一个元素。 所以我们需要一个索引来指出起点。</p>
+
+<p>这是一个供你参考的实现(C++)：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyQueue</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">    </span><br><span class="line">        <span class="comment">// store elements</span></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; data;       </span><br><span class="line">        <span class="comment">// a pointer to indicate the start position</span></span><br><span class="line">        <span class="keyword">int</span> p_start;            </span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        MyQueue() &#123;p_start = <span class="number">0</span>;&#125;</span><br><span class="line">        <span class="comment">/** Insert an element into the queue. Return true if the operation is successful. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">enQueue</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">            data.push_back(x);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Delete an element from the queue. Return true if the operation is successful. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">deQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p_start++;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">/** Get the front item from the queue. */</span></span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">Front</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data[p_start];</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">/** Checks whether the queue is empty or not. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">()</span>  </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> p_start &gt;= data.size();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MyQueue q;</span><br><span class="line">    q.enQueue(<span class="number">5</span>);</span><br><span class="line">    q.enQueue(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">if</span> (!q.isEmpty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; q.Front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    q.deQueue();</span><br><span class="line">    <span class="keyword">if</span> (!q.isEmpty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; q.Front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    q.deQueue();</span><br><span class="line">    <span class="keyword">if</span> (!q.isEmpty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; q.Front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p style="color:#aaaaaa;font-style:italic;">缺点</p>
+
+<hr>
+<p>上面的实现很简单，但在某些情况下效率很低。 随着起始指针的移动，浪费了越来越多的空间。 当我们有空间限制时，这将是难以接受的。</p>
+
+<p><img alt src="https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/07/21/screen-shot-2018-07-21-at-153558.png" style="width: 577px; height: 100px;"></p>
+
+<p>让我们考虑一种情况，即我们只能分配一个最大长度为 5 的数组。当我们只添加少于 5 个元素时，我们的解决方案很有效。 例如，如果我们只调用入队函数四次后还想要将元素 10 入队，那么我们可以成功。</p>
+
+<p>但是我们不能接受更多的入队请求，这是合理的，因为现在队列已经满了。但是如果我们将一个元素出队呢？</p>
+
+<p><img alt src="https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/07/21/screen-shot-2018-07-21-at-153713.png" style="width: 603px; height: 100px;"><br>
+实际上，在这种情况下，我们应该能够再接受一个元素。</p></div>
+
+<h2 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h2><div class="block-markdown"><p></p>
+<p>此前，我们提供了一种简单但低效的队列实现。</p>
+<p>更有效的方法是使用循环队列。 具体来说，我们可以使用<code>固定大小的数组</code>和<code>两个指针</code>来指示起始位置和结束位置。 目的是<code>重用</code>我们之前提到的<code>被浪费的存储</code>。</p>
+<p>让我们通过一个示例来查看循环队列的工作原理。 你应该注意我们<code>入队</code>或<code>出队</code>元素时使用的策略。</p>
+<p>仔细检查动画，找出我们用来检查队列是<code>空</code>还是<code>满</code>的策略。</p>
+</div>
+所谓循环队列就是将队列存储空间的最后一个位置绕到第一个位置,形成逻辑上的环状空间,拱队列循环使用.
+<img alt src="http://p.ananas.chaoxing.com/star3/origin/2a36b47d0c80c8fcdf651b11a3470c9b.gif">
+
+<h1 id="栈-后入先出-LIFO-的数据结构"><a href="#栈-后入先出-LIFO-的数据结构" class="headerlink" title="栈-后入先出(LIFO)的数据结构"></a>栈-后入先出(LIFO)的数据结构</h1><div class="block-markdown"><img alt src="https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-02-at-203523.png" style="width: 341px; height: 150px;">
+
+<h2 id="栈的定义"><a href="#栈的定义" class="headerlink" title="栈的定义"></a>栈的定义</h2><p><code>栈(Stack)</code>是一种特殊的线性表,它所有的插入与删除都限定在表的<code>同一端</code>进行,允许插入与删除的一端称为<code>栈顶</code>,不允许插入与删除的一端称为<code>栈底</code>,当栈中没有元素时,称为<code>空栈</code>.</p>
+<p>在 LIFO 数据结构中，将<code>首先处理添加到队列</code>中的<code>最新元素</code>。</p>
+
+<p>与队列不同，栈是一个 LIFO 数据结构。通常，插入操作在栈中被称作入栈 <code>push</code> 。与队列类似，总是<code>在堆栈的末尾添加一个新元素</code>。但是，删除操作，退栈 <code>pop</code> ，将始终<code>删除</code>队列中相对于它的<code>最后一个元素</code>。</p>
+
+
+<p>&nbsp;</p>
+
+<h2 id="示例-栈"><a href="#示例-栈" class="headerlink" title="示例 - 栈"></a>示例 - 栈</h2><hr>
+<p>1. 入栈：你可以单击下面的 <code>Push</code> 按钮查看如何将新元素 6 添加到栈中。</p>
+
+<p>2. 退栈：你可以单击下面的 <code>Pop</code> 按钮查看当你从栈中弹出一个元素时将移除哪个元素。</p>
+
+<p><img alt id="stack-push" src="https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-03-at-113737.png" style="display: inline; width: 135px; height: 200px;">&nbsp; &nbsp;&nbsp;<button id="stack-btn1" onclick="document.getElementById('stack-push').src='https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-03-at-113755.png';document.getElementById('stack-btn2').style='display:inline';document.getElementById('stack-btn1').style='display:none';" style="display:inline" type="button">Push</button><button id="stack-btn2" onclick="document.getElementById('stack-push').src='https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-03-at-113737.png';document.getElementById('stack-btn1').style='display:inline';document.getElementById('stack-btn2').style='display:none';" style="display:none" type="button">Reset</button>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<img alt id="stack-pop" src="https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-03-at-113755.png" style="display: inline; width: 135px; height: 200px;">&nbsp; &nbsp;&nbsp;<button id="stack-btn3" onclick="document.getElementById('stack-pop').src='https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-03-at-113737.png';document.getElementById('stack-btn4').style='display:inline';document.getElementById('stack-btn3').style='display:none';" style="display:inline" type="button">Pop</button><button id="stack-btn4" onclick="document.getElementById('stack-pop').src='https://aliyun-lc-upload.oss-cn-hangzhou.aliyuncs.com/aliyun-lc-upload/uploads/2018/06/03/screen-shot-2018-06-03-at-113755.png';document.getElementById('stack-btn3').style='display:inline';document.getElementById('stack-btn4').style='display:none';" style="display:none" type="button">Reset</button></p>
+
+<p><audio controls="controls" style="display: none;">&nbsp;</audio></p>
+<p>&nbsp;</p>
+
+<h2 id="实现-栈"><a href="#实现-栈" class="headerlink" title="实现 - 栈"></a>实现 - 栈</h2><hr>
+<p>栈的实现比队列容易。<code>动态数组</code>足以实现堆栈结构。这里我们提供了一个简单的实现供你参考(C++)：</p>
+</div>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyStack</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; data;               <span class="comment">// store elements</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">/** Insert an element into the stack. */</span></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">            data.push_back(x);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Checks whether the queue is empty or not. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data.empty();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Get the top item from the queue. */</span></span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data.back();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Delete an element from the queue. Return true if the operation is successful. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            data.pop_back();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MyStack s;</span><br><span class="line">    s.push(<span class="number">1</span>);</span><br><span class="line">    s.push(<span class="number">2</span>);</span><br><span class="line">    s.push(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!s.isEmpty()) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; s.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; (s.pop() ? <span class="string">"true"</span> : <span class="string">"false"</span>) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>DoffChen</span>
+                    </p>
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/数据结构/"># 数据结构</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/04/Linux镜像下载/"></a>
+            
+            
+            <a class="next" rel="next" href="/2019/07/13/Ubuntu-SSH端口修改/">Ubuntu ssh端口修改</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© DoffChen | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
